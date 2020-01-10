@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Mortar Command</title>
+    <!--<script src=https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js></script>-->
+    
+    
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+  
+      #loading-graphics {
+        background-color:#222222;
+        
+        position:absolute;
+        top:0;
+        left:0;
+        bottom:0;
+        right:0;
+        height:100%;
+        width:100%;
+        z-index:10;
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+      }
+
+
+      .logo {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 515px;
+      }
+  
+  
+      .loading-progress {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        margin: auto;
+        text-align: center;
+        line-height: 22px;
+        
+      }
+
+      .upper {
+        padding-bottom: 230px;
+      }
+  
+      .insert-coin {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        margin: auto;
+        text-align: center;
+        cursor: pointer;
+        visibility: hidden;
+        background-color: #111111;
+        width: 270px;
+        height: 40px;
+        line-height: 40px;
+        border: 2px solid #b4ff00;
+        border-radius: 6px;
+      }
+      
+
+      .centered {
+        width:100%;
+        margin: 0 auto auto auto;
+        background: linear-gradient(180deg, rgb(50,50,50) 0%, rgb(150,150,150) 100%);
+
+      }
+
+      .title {
+        color: black;
+        font-weight: bold;
+        text-align: end;
+      }
+
+
+
+      .lower {
+        font-size: 14px;
+        width:75%;
+        height: 380px;
+        margin: 30px auto 0 auto;
+      }
+
+      #footer {
+        
+        width: 100%;
+        color: grey;
+      }
+
+      .footer-content {
+        width: 65%;
+        margin: 18px auto;
+        font-size:12px;
+        line-height: 14px;
+      }
+
+
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46770771-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-46770771-3');
+    </script>
+
+  
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="loading-graphics">
+      
+       
+        <div class="centered">
+
+          <div class="upper">
+            <br>
+            <img src="./textures/mc-aleutian.png" alt="logo" class="logo">
+            <br>
+            <div class="loading-progress" id="loading">
+              
+              <div id="loading-text">
+                <span id="loading-span" style="margin-right: 12px;">Loading... </span>
+                <img width="18px" src="./textures/loading_spinner.gif"/>
+              </div>
+            
+              <div class="insert-coin" id="start">
+                  INSERT COIN
+              </div>
+
+            </div>
+          
+        </div> <!-- upper -->
+
+
+        </div> <!-- centered -->
+       
+
+      <footer id="footer">
+          <div class="footer-content">
+             
+
+
+                <div>
+                    <div style="float: left; width: 75%; margin-right:10px;">
+                      <b>Acknowledgements:</b> 
+                      React-BabylonJS boilerplate by blurymind. Sound effects from 
+                      freesound.org: [eardeer, EdgardEdition, FxKid2, man, arnaljl, PRIM_ORDial] 
+                    </div>
+                    <div style="float: left; width:50px;">
+                        <a href="https://www.instagram.com/mortarcommander/" target="_blank">  
+                          <img src="./textures/insta.png" alt="insta"/>
+                        </a>
+                    </div>
+                    <div style="float: left; width:50px">
+                        <a href="https://github.com/dgmurphy/mortarcommand" target="_blank">  
+                          <img src="./textures/github.png" alt="github" />
+                        </a>
+                    </div>
+                    <br style="clear: left;" />
+                </div>
+
+             
+        </div>
+      </footer>
+
+    </div> <!--loading graphics-->
+  
+  </body>
+</html>
+
+
