@@ -122,9 +122,6 @@ class Root extends Component {
     start.style.visibility =  "visible"
     start.onclick = this.startGame
 
-    const testAudio = document.getElementById('sound-check')
-    testAudio.style.visibility =  "visible"
-    testAudio.onclick = this.testAudio
 
     document.getElementsByTagName('canvas')[0].focus()
   }
