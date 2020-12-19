@@ -1,10 +1,13 @@
 import * as GUI from '@babylonjs/gui/2D'
+import * as BABYLON from '@babylonjs/core'
 import { destroyAgent, addAgent, addArtifact } from './agent.js'
 import { addPowerStations, addPowerStation, placePowerStations, 
             removeStationWreckage } from './station.js'
 import { GAME_PHASES, GAME_LEVELS, ARTIFACT_TYPES,
          TERRAIN_MESH_NAME, LEVELS_MODE} from './constants.js'
+import { deployMines, placeMines, clearMines } from './mines.js'
 import { randn_bm } from './utils'
+import { addActivator, clearActivators } from './activators.js'
 
 
 export function handleLevelComplete(scene) {
@@ -30,8 +33,11 @@ export function handleLevelComplete(scene) {
 
 export function handleGameOver(scene, handleUpdateGUIinfo) {
 
+    clearMines(scene)
+    clearActivators(scene)
     scene.gameScores.push(scene.gameScore)
     scene.hiGameScore = Math.max.apply(Math, scene.gameScores)
+
 
     handleUpdateGUIinfo()   
 
@@ -92,6 +98,7 @@ export function addGameOverControl(scene) {
         scene.gameScore = 0
         scene.gameNumber += 1
         addPowerStations(scene)
+        scene.mortarBoost = false
 
         addLevelControl(scene)
 
@@ -101,6 +108,9 @@ export function addGameOverControl(scene) {
         document.getElementById('innerbar').setAttribute("style", "width:0%");
         document.getElementById('package-loaded').src='textures/mortar_unlit.png'
 
+        scene.activator_score_thresh_set = false
+        scene.activator_last_score = 0
+    
 
     });
 
@@ -118,6 +128,8 @@ export function addLevelControl(scene) {
            for the raycasting to work properly. Update station
            locations here for this reason */
         placePowerStations(scene)
+        placeMines(scene)
+        
 
         scene.gameStarted = true
     }
@@ -133,7 +145,7 @@ export function addLevelControl(scene) {
         destroyAgent(agentInfo, scene)
     }
     scene.agents = []
-    scene.addAgentCounter = 0
+    //scene.addAgentCounter = 0
     scene.agentsDestroyed = 0
 
     // destroy artifacts
@@ -215,15 +227,15 @@ export function addLevelControl(scene) {
 function getLevelData(scene) {
 
     if (LEVELS_MODE === 'auto')
-        return autoLevelData()
+        return autoLevelData(scene)
     else
         return manualLevelData()
 }
 
 // Get the variables for the level (to inform level gui)
-function autoLevelData() {
+function autoLevelData(scene) {
 
-    let max_bots = 15
+    //let max_bots = 20
 
     let levelData = {
         agents: [],
@@ -234,18 +246,25 @@ function autoLevelData() {
     let totalHealth = 0
     
     // sample number of agents 
-    let numbots = Math.ceil(Math.random() * max_bots)
+    let numbots = scene.gameLevel + 1
+    numbots += Math.floor(Math.random() * 5)
+
+    //let numbots = Math.ceil(Math.random() * max_bots)
+
+    // limit agent health
+    //let max_agent_health = 100
     
     // assign agent health (skew towards lower vals, and create agent
     for (var i = 0; i < numbots; ++i) {
-        let agentHealth = Math.ceil(Math.random() * 100)
+        //let agentHealth = Math.ceil(Math.random() * max_agent_health)
+        let agentHealth = 75 + (Math.ceil(Math.random() * 25))
         totalHealth += agentHealth
         levelData.agents.push(agentHealth)
         
     }
 
-    let healthPercent = (totalHealth / (max_bots * 100)) * 100
-    healthPercent =  Math.floor(healthPercent)
+    // let healthPercent = (totalHealth / (max_bots * 100)) * 100
+    // healthPercent =  Math.floor(healthPercent)
 
     // create 5-10 artifacts, random sizes
     let numArtifacts = randn_bm(5, 10, 1.0)
@@ -264,21 +283,20 @@ function autoLevelData() {
     }    
 
     // create level tip
-    let levelDifficulty = ""
-    if (totalHealth < 100)
-        levelDifficulty = "Cake Walk"
-    else if (totalHealth < 300)
-        levelDifficulty = "Easy"
-    else if (totalHealth < 700)
-        levelDifficulty = "Medium"
-    else if (totalHealth < 900)
-        levelDifficulty = "Hard"
-    else
-        levelDifficulty = "Better close your eyes."
+    // let levelDifficulty = ""
+    // if (totalHealth < 300)
+    //     levelDifficulty = "Cake Walk"
+    // else if (totalHealth < 500)
+    //     levelDifficulty = "Easy"
+    // else if (totalHealth < 1000)
+    //     levelDifficulty = "Medium"
+    // else if (totalHealth < 1500)
+    //     levelDifficulty = "Hard"
+    // else
+    //     levelDifficulty = "Very Hard"
 
-    let tip = "You will face " + numbots + " bots. Total bot strength is " 
-        + healthPercent + "%."
-    tip += "\nDifficulty: " + levelDifficulty
+    let tip = "You will face " + numbots + " bots." 
+    tip += "\nTotal bot strength is " + totalHealth
 
     levelData.tip = tip
 
@@ -350,13 +368,72 @@ function handleDebug(e) {
         console.log("DEBUG: " + e.which)
     }
 
-    if ( (e.which === 84) && (e.altKey) ) {
+    else if ( (e.which === 84) && (e.altKey) ) {
         hideTerrain(e)
+        console.log("DEBUG: " + e.which)
+    }
+
+    else if ( (e.which === 73) && (e.altKey) ) {
+        replaceMines(e)
+        console.log("DEBUG: " + e.which)
+    }
+
+    // // TEMP
+    // else if (e.which === 81) {
+    //     var c = e.currentTarget.document.getElementsByTagName('canvas')[0]
+    //     var scene = c.bjsScene
+    //     let lake = BABYLON.MeshBuilder.CreateSphere("LAKE", scene)
+    //     lake.position.x = -2
+    //     lake.position.y = 3.5
+    //     lake.position.z = 1.5
+    //     lake.scaling = new BABYLON.Vector3(5,5,5)
+    // }
+
+    else if ( (e.which === 65) && (e.altKey) ) {
+        deployMineActivator(e)
+        console.log("DEBUG: " + e.which)
+    }
+
+    else if ( (e.which === 72) && (e.altKey) ) {
+        deployHealthActivator(e)
+        console.log("DEBUG: " + e.which)
+    }
+
+    else if ( (e.which === 66) && (e.altKey) ) {
+        deployBoltActivator(e)
         console.log("DEBUG: " + e.which)
     }
 
 }
 
+function deployHealthActivator(e) {
+    var c = e.currentTarget.document.getElementsByTagName('canvas')[0]
+    var scene = c.bjsScene
+    addActivator(scene, "health")
+}
+
+
+function deployMineActivator(e) {
+    var c = e.currentTarget.document.getElementsByTagName('canvas')[0]
+    var scene = c.bjsScene
+    addActivator(scene, "mine")
+}
+
+
+function deployBoltActivator(e) {
+    var c = e.currentTarget.document.getElementsByTagName('canvas')[0]
+    var scene = c.bjsScene
+    addActivator(scene, "bolt")
+}
+
+function replaceMines(e) {
+
+    var c = e.currentTarget.document.getElementsByTagName('canvas')[0]
+    var scene = c.bjsScene
+    deployMines(scene)
+
+   
+}
 
 function hideTerrain(e) {
 

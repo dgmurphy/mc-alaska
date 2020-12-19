@@ -1,101 +1,101 @@
 export const GAME_LEVELS = [
     { // level 1
-      agents: [10, 10, 50],   // initial health values   
+      agents: [100,100,100,100],   // initial health values      
       artifacts: { small: 1, med: 1, large: 2 },
       tip: "Tip: If things are moving a bit slowly, \nmake your browser window smaller."  
     },        
     {  // level 2
-        agents: [10, 10, 10, 40],
+        agents: [ 100,100,100,100,100,100],
         artifacts: { small: 2, med: 1, large: 2},
-        tip: "Tip: Some bots are stronger than others."
+        tip: "Tip: When a hologram appears, shoot the activator \nat the pedestal base to unlock assets."
     },    
     {  // level 3
-        agents: [10, 10, 30, 40, 40, 40],
-        artifacts: { small: 2, med: 2, large: 3},
-        tip: "Tip: Destroy ore deposits to delay the bots."
-    },    
-    {  // level 4
-        agents: [10, 20, 30, 40, 40, 40, 50],
+        agents: [ 100,100,100,100,100,100,100],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Tip: When the green progress bar is full\nyour heavy mortar is ready (space-bar)"
     },    
+    {  // level 4
+        agents: [100,100,100,100,100,100,100,100 ],
+        artifacts: { small: 2, med: 2, large: 3},
+        tip: "Tip: Damaged bots will move more slowly."
+    },    
     {  // level 5
-        agents: [1, 1,1,10,10,10,10,10,10, 30, 60, 70],
+        agents: [100,100,100,100,100,100,100,100, 100],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Tip: Use mouse buttons to pan/rotate/zoom if you want."
     },    
     {  // level 6
-        agents: [9,9,9,9,9,9,9,9,9,9],
+        agents: [ 100,100,100,100,100,100,100,100,100, 100],
         artifacts: { small: 2, med: 2, large: 3},
-        tip: "Tip: The closer your mortar detonates to\n a bot, the more damage it does."
+        tip: "Tip: Destroy ore deposits to delay the bots."
     },    
     {  // level 7
-        agents: [10,20,20,20,20,30,30,30,30,30],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Send suggestions to mortarcommander@gmail.com"
     },
     {  // level 8
-        agents: [10,10,10,10,10,10,100],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Tip: The larger ore deposits do more damage\n to your stations."
     },
     {  // level 9
-        agents: [1,1,1,1,1,10, 20, 30, 70],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
-        tip: "Tip: Damaged bots move more slowly."
+        tip: "Tip: Activators are created as your score increases."
     },
     {  // level 10
-        agents: [30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30],
+        agents: [100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Tip: You cannot damage your own stations."
     },
     {  // level 11
-        agents: [1,1,1, 10, 20, 30, 40, 50, 60, 70, 80, 90],
+        agents: [ 100,100,100,100,100,100,100,100,100,100,100],
         artifacts: { small: 2, med: 2, large: 3},
-        tip: "That's pretty much it for the tips.\nThere are 20 levels in this version."
+        tip: "There are 20 levels in this version."
     },
     {  // level 12
-        agents: [10, 10, 10, 20, 40, 40, 40, 40, 60, 60, 60, 90],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
-        tip: "Slow is smooth. Smooth is fast."
+        tip: "The mines activator will deploy up \nto 3 proximity mines."
     },
     {  // level 13
-        agents: [10, 10, 10, 20, 20, 20, 20, 20, 40, 50, 60, 70],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
-        tip: "These bots do not learn as we do, \n or at all actually."
+        tip: "The health activator will repair \none destroyed station."
     },
     {  // level 14
-        agents: [10, 10, 20, 20, 20, 21, 34, 67, 67, 67, 76, 76],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
-        tip: "Aim well commander."
+        tip: "The boost activator will increase \nmortar lethality."
     },
     {  // level 15
-        agents: [10,10,10,10,10,1,1,1,1,11,1,1,11],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100 ],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Mortars are like real estate,\n location is everything."
     },
     {  // level 16
-        agents: [4,4,4,11,11,11,11, 25, 25, 75, 75, 75, 100],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100 ],
+        artifacts: { small: 2, med: 2, large: 3},
+        tip: "You can use the Q-key or the Z-key or the M-key to fire."
+    },
+    {  // level 17
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "You are doing well, commander."
     },
-    {  // level 17
-        agents: [1,1,1, 12,12,12,12,12,12,12,85, 85, 85],
-        artifacts: { small: 2, med: 2, large: 3},
-        tip: "Easy peasy."
-    },
     {  // level 18
-        agents: [1,1,1, 15, 18, 27, 80, 80, 80, 80, 80, 90],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "Two more levels."
     },
     {  // level 19
-        agents: [50],
+        agents: [100],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "The calm before the storm."
     },
     {  // level 20
-        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100 ],
+        agents: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
         artifacts: { small: 2, med: 2, large: 3},
         tip: "The storm."
     }
@@ -121,10 +121,10 @@ export const phases = {
 export const ARTIFACT_TYPES = {
     small: { mass: 1, scale: 0.6 },
     medium: { mass: 4, scale: 1 },
-    large: { mass: 7, scale: 1.5}
+    large: { mass: 8, scale: 1.5}
 }
 export const ARTIFACT_SIZE = 1
-export const ARTIFACT_MAX_HEALTH = 60
+export const ARTIFACT_MAX_HEALTH = 20
 export const ARTIFACT_INTERACT_COEFF = 1.5
 export const ARTIFACT_ZONE_LINE = -12.5
 export const ARTIFACT_AREA = {
@@ -150,6 +150,14 @@ export const FIELD_EXTENTS = {
                 zMax: 14.6,
                 zMin: -14.6
            }
+
+// limits for detonations
+export const ROUND_EXTENTS = {
+    xMax: 27.6,
+    xMin: -27.6,
+    zMax: 17.6,
+    zMin: -17.6    
+}
 
 export const GUTTER_WIDTH = 2  // for edge steer
 
@@ -200,13 +208,13 @@ export const GUN_POSITION = {
 export const BLAST_ALPHA = 0.9
 export const MORTAR_BLAST_RADIUS_START = 1
 export const MORTAR_BLAST_LIFE = 10
-export const BLAST_DAMAGE_COEFF = 4
+//export var BLAST_DAMAGE_COEFF = 3  add to scene instead
 
 export const GUN_BLAST_RADIUS_START = 0.3
 export const GUN_BLAST_LIFE = 8
 
 export const POINTS_AGENT_HIT = 50
-export const POINTS_ARTIFACT_HIT = 30
+export const POINTS_ARTIFACT_HIT = 10
 
 export const GAME_PHASES = {
     startLevel: 'startLevel',
@@ -216,7 +224,7 @@ export const GAME_PHASES = {
 }
 
 // points to load the heavy mortar
-export const PACKAGE_POINTS_THRESH = 10000
+export const PACKAGE_POINTS_THRESH = 12000
 
 export const TERRAIN_MESH_NAME = "Anianchak"
 

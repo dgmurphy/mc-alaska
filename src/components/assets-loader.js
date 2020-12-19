@@ -13,6 +13,28 @@ export function loadAssets(scene, updateAssetStatus) {
     
 
     /* ------ sound load ------------ */
+    var activatorExpiredSoundTask = assetsManager.addBinaryFileTask("activatorExpiredSoundTask", "sounds/power-off.wav")
+    activatorExpiredSoundTask.onSuccess = function (task) {
+      let activatorExpiredSound = new BABYLON.Sound("power-off", task.data, scene, soundReady(task))
+    }
+
+
+    var newActivatorSoundTask = assetsManager.addBinaryFileTask("newActivatorSoundTask", "sounds/new_activator.wav")
+    newActivatorSoundTask.onSuccess = function (task) {
+      let newActivatorSound = new BABYLON.Sound("newActivator", task.data, scene, soundReady(task))
+    }
+
+
+    var activatorPowerUpSoundTask = assetsManager.addBinaryFileTask("activatorPowerUpSoundTask", "sounds/power-up.wav")
+    activatorPowerUpSoundTask.onSuccess = function (task) {
+      let activatorPowerUpSound = new BABYLON.Sound("activatorPowerUp", task.data, scene, soundReady(task))
+    }
+
+    var activatorHitSoundTask = assetsManager.addBinaryFileTask("activatorHitSoundTask", "sounds/dink.wav")
+    activatorHitSoundTask.onSuccess = function (task) {
+      let activatorHitSound = new BABYLON.Sound("activatorHit", task.data, scene, soundReady(task))
+    }
+
     var heavyMortarSoundTask = assetsManager.addBinaryFileTask("heavyMortarSoundTask", "sounds/heavymortar.wav")
     heavyMortarSoundTask.onSuccess = function (task) {
       let heavyMortarSound = new BABYLON.Sound("heavyMortar", task.data, scene, soundReady(task))
@@ -74,6 +96,11 @@ export function loadAssets(scene, updateAssetStatus) {
       let agentDestroyedSound = new BABYLON.Sound("agent-destroyed", task.data, scene, soundReady(task))
     }
 
+    var mineSoundTask = assetsManager.addBinaryFileTask("mineSoundTask", "sounds/mine.wav")
+    mineSoundTask.onSuccess = function (task) {
+      let mineSound = new BABYLON.Sound("mine", task.data, scene, soundReady(task))
+    }
+
 
     /* ------ terrain load ------------ */
     var terrainTask = assetsManager.addMeshTask("terrainLoadTask", "", "./", "anianchak.gltf")
@@ -101,7 +128,7 @@ export function loadAssets(scene, updateAssetStatus) {
         vertex_data.normals[i] *= -1;
       }
 
-      vertex_data.applyToMesh(terrain);
+      //vertex_data.applyToMesh(terrain);
 
       terrain.computeWorldMatrix(true); 
 

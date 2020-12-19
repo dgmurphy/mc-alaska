@@ -55,7 +55,7 @@ export default class Viewer extends Component {
         scene.nextRoundId = 0
         scene.gameFrame = 0
         scene.gameStartFrame = 0
-        scene.addAgentCounter = 0
+        //scene.addAgentCounter = 0
         scene.gameScores = []
         scene.gameScore = 0
         scene.hiGameScore = 0
@@ -65,6 +65,10 @@ export default class Viewer extends Component {
         scene.gamePhase = GAME_PHASES.startLevel
         scene.gameStarted  = false
         scene.packagePoints = 0
+        scene.mines = []
+        scene.activators = []
+        scene.liveStations = 0
+        scene.mortarBoost = false
         
         engine.runRenderLoop(() => {
             if (scene) {

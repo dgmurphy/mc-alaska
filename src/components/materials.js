@@ -1,12 +1,111 @@
 import * as BABYLON from '@babylonjs/core';
 
+export var holomat
+export var iconmat_mine
+export var iconmat_cross
+
+export const  roundParticlecolors = {
+    particles_color1: new BABYLON.Color4(1,1,1,1),
+    particles_color2: new BABYLON.Color4(.4, .3, 0.2, 1.0),
+    particles_colorDead: new BABYLON.Color4(0.3, 0.1, 0, 0.0)
+}   
+
+export const  roundParticlecolorsBoost = {
+    particles_color1: new BABYLON.Color4(.3,1,.3,1),
+    particles_color2: new BABYLON.Color4(.4, .7, 0.2, 1.0),
+    particles_colorDead: new BABYLON.Color4(0.1, 0.3, 0, 0.0)
+}   
+
+export const blastParticlesProps = {
+    minSize: .05,
+    maxSize: .3,
+    maxLifeTime: .003,
+    color1: new BABYLON.Color4(.6,.2,.2,1),
+    color2: new BABYLON.Color4(.3, .1, .3, 1.0),
+    colorDead: new BABYLON.Color4(0.3, 0, 0, 0.0),
+    emitRate: 300,
+    minEmitPower: 1,
+    maxEmitPower: 6
+}
+
+export const blastParticlesPropsBoost = {
+    minSize: .05,
+    maxSize: .32,
+    maxLifeTime: .005,
+    color1: new BABYLON.Color4(.7,.1,.1,1),
+    color2: new BABYLON.Color4(.3, .1, .3, 1.0),
+    colorDead: new BABYLON.Color4(0, 0.1, 0, 0.0),
+    emitRate: 800,
+    minEmitPower: 1,
+    maxEmitPower: 20
+
+}
+
+
+
 export function createMaterials(scene) {
+
+    var activatorbasemat = new BABYLON.StandardMaterial("activatorbasemat", scene);
+    activatorbasemat.diffuseColor = new BABYLON.Color4(.2,.2,.2,1)
+
+    var activatorbaseconemat_1 = new BABYLON.StandardMaterial("activatorbaseconemat_1", scene);
+    activatorbaseconemat_1.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+
+    var activatorbaseconemat_2 = new BABYLON.StandardMaterial("activatorbaseconemat_2", scene);
+    activatorbaseconemat_2.diffuseColor = new BABYLON.Color3(0.9, .9, 0.9);
+
+    var activatorbaseconemat_3 = new BABYLON.StandardMaterial("activatorbaseconemat_3", scene);
+    activatorbaseconemat_3.diffuseColor = new BABYLON.Color3(0.8, 0, 1);
+
+    var activatorbaseconemat_4 = new BABYLON.StandardMaterial("activatorbaseconemat_4", scene);
+    activatorbaseconemat_4.diffuseColor = new BABYLON.Color3(0.2, 1, 0.2);
+
+    holomat = new BABYLON.StandardMaterial("holomat", scene);
+    holomat.backFaceCulling = false
+    holomat.alpha = 1
+    //holomat.emissiveColor = new BABYLON.Color3(0,0,1);
+    //holomat.getAlphaFromRGB = true
+    holomat.opacityTexture = new BABYLON.Texture("textures/scanlines_op.png", scene);
+    holomat.emissiveTexture = new BABYLON.Texture("textures/scanlines.png", scene);
+    holomat.diffuseTexture = new BABYLON.Texture("textures/scanlines.png", scene);
+ 
+    iconmat_mine = new BABYLON.StandardMaterial("iconmat_mines", scene);
+    iconmat_mine.emissiveTexture = new BABYLON.Texture("/textures/mines.png", scene);
+    iconmat_mine.backFaceCulling = false;
+    iconmat_mine.opacityTexture = new BABYLON.Texture("/textures/mines.png", scene);
+
+    iconmat_cross = new BABYLON.StandardMaterial("iconmat_cross", scene);
+    iconmat_cross.emissiveTexture = new BABYLON.Texture("/textures/cross.png", scene);
+    iconmat_cross.backFaceCulling = false;
+    iconmat_cross.opacityTexture = new BABYLON.Texture("/textures/cross.png", scene);
+
+    var iconmat_bolt = new BABYLON.StandardMaterial("iconmat_bolt", scene);
+    iconmat_bolt.emissiveTexture = new BABYLON.Texture("/textures/bolt.png", scene);
+    iconmat_bolt.backFaceCulling = false;
+    iconmat_bolt.opacityTexture = new BABYLON.Texture("/textures/bolt.png", scene);
+
+
+    let mineCoreMat = new BABYLON.StandardMaterial("mineCoreMat", scene);
+    mineCoreMat.diffuseColor =  new BABYLON.Color3(1,1,.6)
+    mineCoreMat.emissiveColor = new BABYLON.Color3(.1,.1,.1)
+
+    let mineRingMat = new BABYLON.StandardMaterial("mineRingMat", scene);
+    mineRingMat.diffuseColor =  new BABYLON.Color3(.25,.25,.25)
+    //mineCoreRed.emissiveColor = new BABYLON.Color3.Red()
+
+    let mineRingLitMat = new BABYLON.StandardMaterial("mineRingLitMat", scene);
+    mineRingLitMat.diffuseColor =  new BABYLON.Color3(1,.2,1)
+    //mineRingLitMat.emissiveColor = new BABYLON.Color3(0.1,0,0.1)
 
     let blastMat = new BABYLON.StandardMaterial("blastMat", scene);
     blastMat.diffuseColor =  new BABYLON.Color3(1,.97,.67)
     //psPylonsMat.emissiveColor =  new BABYLON.Color3(.1,.2,.1)
     blastMat.alpha = 0.3
 
+    let mineBlastMat = new BABYLON.StandardMaterial("mineBlastMat", scene);
+    mineBlastMat.diffuseColor =  new BABYLON.Color3(1,.17,.97)
+    //psPylonsMat.emissiveColor =  new BABYLON.Color3(.1,.2,.1)
+    mineBlastMat.alpha = 0.3
 
     let psPylonsMat = new BABYLON.StandardMaterial("stationPylons_Lit", scene);
     psPylonsMat.diffuseColor =  new BABYLON.Color3(1,1,1)
@@ -38,6 +137,8 @@ export function createMaterials(scene) {
     let innerPowerCoreBrokenMat = new BABYLON.StandardMaterial("innerPowerCoreBrokenMat", scene)
     innerPowerCoreBrokenMat.diffuseColor =  new BABYLON.Color3(.5,.5,.08)
     
+    let artifactCoreMat = new BABYLON.StandardMaterial("artifactCoreMat", scene)
+    artifactCoreMat.diffuseColor =  new BABYLON.Color3(.7,.7,.7)
 
     let artifactShellMat = new BABYLON.StandardMaterial("artifactShellMat", scene)
     artifactShellMat.emissiveColor = new BABYLON.Color3.Gray();

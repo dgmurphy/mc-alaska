@@ -7,10 +7,12 @@ import { MORTAR_VELOCITY, MORTAR_YPEAK, ROUND_PHASES,
    BLAST_ALPHA, MORTAR_BLAST_RADIUS_START, MORTAR_BLAST_LIFE, 
    GUN_BLAST_LIFE, GUN_BLAST_RADIUS_START,
    POINTS_AGENT_HIT, ARTIFACT_MAX_HEALTH, POINTS_ARTIFACT_HIT,
-   BLAST_DAMAGE_COEFF, GAME_PHASES, PACKAGE_VELOCITY, TERRAIN_MESH_NAME} from './constants.js'
+   GAME_PHASES, PACKAGE_VELOCITY, TERRAIN_MESH_NAME, ROUND_EXTENTS} from './constants.js'
 import { destroyAgent, addArtifact } from './agent.js'
 import { handleLevelComplete } from './lifecycle.js'
 import { getAgentMat } from './materials.js'
+import { updateActivatorColor, activator_activate } from './activators.js'
+
 
 
 export function addFireListener(scene) {
@@ -24,7 +26,7 @@ export function addFireListener(scene) {
 
 function handleKeyPress(e) {
 
-  if ( (e.which === 90) || (e.which === 77) ) {
+  if ( (e.which === 90) || (e.which === 77) || (e.which === 81) ) {
     fireRound(e)
   } else if( e.which === 32) {
     fireThePackage(e)
@@ -39,9 +41,16 @@ function hasHitGround(pos, scene) {
   if (pos.y > 5)
     return false
 
-  // failsafe check
-  if (pos.y < 0)
+  // check if round has gone beyond the playfield
+  if ( (pos.x > ROUND_EXTENTS.xMax) ||
+       (pos.x > ROUND_EXTENTS.xMax) ||
+       (pos.z > ROUND_EXTENTS.zMax) ||
+       (pos.z < ROUND_EXTENTS.zMin) ||
+       (pos.y < 0)
+  ) {
     return true
+  }
+
 
    // Casting a ray to get height
    let terrainMesh = scene.getMeshByName(TERRAIN_MESH_NAME)
@@ -193,9 +202,7 @@ export function updateThePackage(scene) {
 
   }
 
-      /*
-      TODO Update damage to agents and artifacts
-    */
+   
    let range
 
     for (var agent of scene.agents) { // update agent damage
@@ -204,7 +211,7 @@ export function updateThePackage(scene) {
 
       if (range < tp.blastRadiusCurrent) {
 
-        agent.health -= (tp.blastRadiusCurrent - range) * BLAST_DAMAGE_COEFF * .065
+        agent.health -= (tp.blastRadiusCurrent - range) * scene.BLAST_DAMAGE_COEFF * .065
         updateAgentColor(agent, scene)
         scene.gameScore += POINTS_AGENT_HIT 
 
@@ -222,7 +229,7 @@ export function updateThePackage(scene) {
       if (artifact.detected === true) {   // artifact is visible
         range = BABYLON.Vector3.Distance(artifact.pos, tp.pos)
         if (range < tp.blastRadiusCurrent) {
-          artifact.health -= (tp.blastRadiusCurrent - range) * BLAST_DAMAGE_COEFF * .065
+          artifact.health -= (tp.blastRadiusCurrent - range) * scene.BLAST_DAMAGE_COEFF * .065
           updateArtifactColor(artifact, scene)
           scene.gameScore += POINTS_ARTIFACT_HIT
 
@@ -311,7 +318,7 @@ export function updateRounds(scene) {
 
       if (range < round.blastRadiusCurrent) {
 
-        agent.health -= (round.blastRadiusCurrent - range) * BLAST_DAMAGE_COEFF 
+        agent.health -= (round.blastRadiusCurrent - range) * scene.BLAST_DAMAGE_COEFF 
         updateAgentColor(agent, scene)
         scene.gameScore += POINTS_AGENT_HIT 
         scene.packagePoints += POINTS_AGENT_HIT 
@@ -331,7 +338,7 @@ export function updateRounds(scene) {
       if (artifact.detected === true) {   // artifact is visible
         range = BABYLON.Vector3.Distance(artifact.pos, round.pos)
         if (range < round.blastRadiusCurrent) {
-          artifact.health -= (round.blastRadiusCurrent - range) * BLAST_DAMAGE_COEFF 
+          artifact.health -= (round.blastRadiusCurrent - range) * scene.BLAST_DAMAGE_COEFF 
           updateArtifactColor(artifact, scene)
           scene.gameScore += POINTS_ARTIFACT_HIT
           scene.packagePoints += POINTS_ARTIFACT_HIT
@@ -341,6 +348,19 @@ export function updateRounds(scene) {
         }
       }
     }
+
+    // update activator fuses
+    for (var activator of scene.activators) {  
+      range = BABYLON.Vector3.Distance(activator.core.position, round.pos)
+      if (range < round.blastRadiusCurrent) {
+        activator.fusecount += (round.blastRadiusCurrent - range) * scene.BLAST_DAMAGE_COEFF 
+        updateActivatorColor(activator, scene)
+      }
+
+      if(activator.fusecount > activator.fusetrigger)
+        activator_activate(activator, scene)
+    }
+   
 
   } // for each round
 
@@ -521,7 +541,7 @@ function renderFireTarget(scene, minRange) {
 }
 
 
-function killArtifact(artifact, scene) {
+export function killArtifact(artifact, scene) {
 
   const hasName = (obj) => obj.name === artifact.name
   const idx = scene.artifacts.findIndex( hasName )
@@ -541,7 +561,7 @@ function killArtifact(artifact, scene) {
 }
 
 
-function killAgent(agent, scene) {
+export function killAgent(agent, scene) {
 
   destroyAgent(agent, scene)
   const hasName = (obj) => obj.name === agent.name
@@ -560,7 +580,7 @@ function killAgent(agent, scene) {
 
 }
 
-function updateAgentColor(agent, scene) {
+export function updateAgentColor(agent, scene) {
 
   agent.meshes.body.material = getAgentMat(scene, agent.health)
 
@@ -571,7 +591,7 @@ function updateAgentColor(agent, scene) {
 
 }
 
-function updateArtifactColor(artifact, scene) {
+export function updateArtifactColor(artifact, scene) {
 
   let h = artifact.health
   let minorDamage = ARTIFACT_MAX_HEALTH * (2/3)

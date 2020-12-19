@@ -3,12 +3,17 @@ import { getAngle, getGroundRange } from './utils.js'
 import { FRAMETHRESH_GUI, FIELD_EXTENTS, phases, edge, 
         STATION_MAX_HEALTH, hotgrid, GUTTER_WIDTH, AGENT_SENSOR_RADIUS,
         AGENT_MAX_SPEED, AGENT_MAX_HEALTH, AGENT_MIN_SPEED,
-        TERRAIN_MESH_NAME } from './constants.js'
+        TERRAIN_MESH_NAME, WATER_TRAIL_COLOR1,
+        WATER_TRAIL_COLOR2, WATER_TRAIL_COLOR_DEAD,
+        AGENT_TRAIL_COLOR1, AGENT_TRAIL_COLOR2, 
+        AGENT_TRAIL_COLOR_DEAD, MORTAR_BOOST_LIFE} from './constants.js'
 import { randomSteerMotivator, seekZoneMotivator, locateArtifactMotivator,
          moveToTargetMotivator, avoidEdgeMotivator } from './steering-motivators.js'
 import { setModeInputs } from './mode-utils.js'
 import { updateRounds, updateThePackage } from './mortars.js'
 import { setArtifactDetected } from './agent.js';
+import { updateMines } from './mines.js';
+import { activator_aging, activatorChance, disableMortarBoost } from './activators.js'
 
 
 
@@ -31,6 +36,7 @@ export function startAgentAnim(scene, handleUpdateGUIinfo) {
 
         updateRounds(scene)
         updateThePackage(scene)
+        updateMines(scene)
 
         // TODO only check if there are any agents in the artifact zone
         detectArtifacts(scene)
@@ -41,6 +47,15 @@ export function startAgentAnim(scene, handleUpdateGUIinfo) {
             station.shell.rotate(BABYLON.Axis.Y, spinSpeed, BABYLON.Space.LOCAL)
         }
 
+        // animator activators
+        for (var activator of scene.activators) {
+            let spinSpeed = .02
+            activator.rotator.rotate(BABYLON.Axis.Y, spinSpeed, BABYLON.Space.LOCAL)
+
+            activator_aging(activator, scene)
+        }
+
+
         // Check for mode change on interval (higher interval => better perf)
         var agent
         if (modeCheckCounter === modeCheckThresh) {
@@ -48,6 +63,13 @@ export function startAgentAnim(scene, handleUpdateGUIinfo) {
             setModeInputs(scene, handleUpdateGUIinfo)
             for (agent of scene.agents)
                 steeringPoll(agent)
+
+            // do activatorCheck
+            activatorChance(scene)
+
+            // check if mortar boost is expired
+            if ((scene.gameFrame - scene.mortarBoostFrame) > MORTAR_BOOST_LIFE)
+                disableMortarBoost(scene)
 
             modeCheckCounter = 0
         }
@@ -70,7 +92,7 @@ export function startAgentAnim(scene, handleUpdateGUIinfo) {
     
         frameCounter += 1
         modeCheckCounter += 1
-        scene.addAgentCounter += 1
+        //scene.addAgentCounter += 1
        
     })
     // ************** Game/Render loop done ***********************************
@@ -122,8 +144,11 @@ export function drive(agentInfo) {
     //console.log("ds: " + ds)
 
     // size particle trail
-    let particlePower = 100   // TODO GUI control
-    particles.maxEmitPower = particlePower * ds
+    //let particlePower = 100   // TODO GUI control
+    //particles.maxEmitPower = particlePower * ds
+
+    // colorize & size particle trail
+    colorizeParticles(agentPos, particles, ds)
 
     // Keep the agent inside terrian extents
     let testx = agentPos.x + ds * hvecx
@@ -140,6 +165,77 @@ export function drive(agentInfo) {
     return pos
 }
 
+
+function colorizeParticles(agentPos, particles, ds) {
+
+    var color1, color2, colorDead, particlePower
+
+    if(isOverWater(agentPos)) {
+
+        particlePower =  200
+
+        color1 =  new BABYLON.Color4(WATER_TRAIL_COLOR1[0],
+            WATER_TRAIL_COLOR1[1],
+            WATER_TRAIL_COLOR1[2],
+            WATER_TRAIL_COLOR1[3])
+
+        color2 =  new BABYLON.Color4(WATER_TRAIL_COLOR2[0],
+            WATER_TRAIL_COLOR2[1],
+            WATER_TRAIL_COLOR2[2],
+            WATER_TRAIL_COLOR2[3])
+
+        colorDead =  new BABYLON.Color4(WATER_TRAIL_COLOR_DEAD[0],
+            WATER_TRAIL_COLOR_DEAD[1],
+            WATER_TRAIL_COLOR_DEAD[2],
+            WATER_TRAIL_COLOR_DEAD[3])
+
+    } else {
+
+        particlePower = 100
+
+        color1 =  new BABYLON.Color4(AGENT_TRAIL_COLOR1[0],
+            AGENT_TRAIL_COLOR1[1],
+            AGENT_TRAIL_COLOR1[2],
+            AGENT_TRAIL_COLOR1[3])
+
+        color2 =  new BABYLON.Color4(WATER_TRAIL_COLOR2[0],
+            AGENT_TRAIL_COLOR2[1],
+            AGENT_TRAIL_COLOR2[2],
+            AGENT_TRAIL_COLOR2[3])
+
+        colorDead =  new BABYLON.Color4(WATER_TRAIL_COLOR_DEAD[0],
+            AGENT_TRAIL_COLOR_DEAD[1],
+            AGENT_TRAIL_COLOR_DEAD[2],
+            AGENT_TRAIL_COLOR_DEAD[3])
+
+    }
+
+    particles.color1 = color1
+    particles.color2 = color2
+    particles.colorDead = colorDead
+
+    particles.maxEmitPower = particlePower * ds
+
+
+}
+
+function isOverWater(agentPos) {
+
+    let waterBox = {
+        xMax: 12,
+        xMin: -4,
+        zMax: 8,
+        zMin: -11.5
+    }
+
+    // TODO Contants for water locations
+    if ((agentPos.x < waterBox.xMax) &&
+        (agentPos.x > waterBox.xMin)) {
+            return true
+        }
+
+    return false
+}
 
 export function anim(agentInfo, terrainMesh) {
 

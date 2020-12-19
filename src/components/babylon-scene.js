@@ -70,6 +70,16 @@ export default class BabylonScene extends Component {
     // agents
     startAgentAnim(scene, this.props.handleUpdateGUIinfo)
 
+    // counters
+    scene.mineCounter = 1
+    scene.activatorCounter = 1
+    scene.activator_score_thresh_set = false
+    scene.activator_last_score = 0
+
+    scene.BLAST_DAMAGE_COEFF = 3
+
+    BABYLON.Animation.AllowMatricesInterpolation = true
+    
     this.props.enableStart()
 
   }

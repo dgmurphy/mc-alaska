@@ -6,6 +6,38 @@ import { getGroundElevation } from './utils.js'
 import { handleGameOver } from './lifecycle.js'
 
 
+// restore one wreck
+export function repairOneStation(scene) {
+
+    var wreck = null
+    for (var w of scene.wreckedStations) {
+        if (w.shell.isEnabled()) {
+            wreck = w
+            break
+        }
+    }
+
+    if (wreck !== null) {
+
+        // get the station info
+        let id = wreck.id
+        let posx = wreck.shell.position.x
+        let posz = wreck.shell.position.z
+
+        /* remove the wreckage */
+        wreck.shell.dispose()
+        wreck.innerCore.dispose()
+        wreck.particles.dispose()
+
+        const hasId = (obj) => obj.id === id
+        const idx = scene.wreckedStations.findIndex(hasId)
+        scene.wreckedStations.splice(idx, 1)
+
+        /* replace the station */
+        addPowerStation(scene, posx, posz, id)
+    }
+}
+
 function makePowerStation(name, scene) {
 
     /* perimeter */
@@ -67,7 +99,7 @@ function makePowerStation(name, scene) {
     innerCore.parent = core
 
     /* animation */
-    BABYLON.Animation.AllowMatricesInterpolation = true
+    
     var animationCore = new BABYLON.Animation(name + "_stationAnim", 
         "material.emissiveColor", 30, BABYLON.Animation.ANIMATIONTYPE_COLOR3, 
         BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
@@ -92,25 +124,25 @@ function makePowerStation(name, scene) {
     scene.beginAnimation(innerCore, 0, 60, true)
 
     /* damage particles */
-    var damageParticles = new BABYLON.GPUParticleSystem(name + "_damageparticles", { capacity: 900 }, scene);
-    var sphereEmitter = damageParticles.createSphereEmitter(1.2);
-    let damageColors = {
-        particles_color1: new BABYLON.Color4(.2,.45,.15, 1),
-        particles_color2: new BABYLON.Color4(1, 1, 1, 1.0),
-        particles_colorDead: new BABYLON.Color4(0, .1, 0, 0.0)
-    }   
-    damageParticles.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
-    damageParticles.emitter = innerCore;
-    damageParticles.minSize = 0.01;
-    damageParticles.maxSize = 0.2;
-    damageParticles.maxLifeTime = 1
-    damageParticles.color1 = damageColors.particles_color1
-    damageParticles.color2 = damageColors.particles_color2
-    damageParticles.colorDead = damageColors.particles_colorDead
-    damageParticles.emitRate = 300;
-    damageParticles.minEmitPower = .1;
-    damageParticles.maxEmitPower = 9;
-    damageParticles.gravity = new BABYLON.Vector3(0, -20, 0); 
+    // var damageParticles = new BABYLON.GPUParticleSystem(name + "_damageparticles", { capacity: 900 }, scene);
+    // var sphereEmitter = damageParticles.createSphereEmitter(1.2);
+    // let damageColors = {
+    //     particles_color1: new BABYLON.Color4(.2,.45,.15, 1),
+    //     particles_color2: new BABYLON.Color4(1, 1, 1, 1.0),
+    //     particles_colorDead: new BABYLON.Color4(0, .1, 0, 0.0)
+    // }   
+    // damageParticles.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+    // damageParticles.emitter = innerCore;
+    // damageParticles.minSize = 0.01;
+    // damageParticles.maxSize = 0.2;
+    // damageParticles.maxLifeTime = 1
+    // damageParticles.color1 = damageColors.particles_color1
+    // damageParticles.color2 = damageColors.particles_color2
+    // damageParticles.colorDead = damageColors.particles_colorDead
+    // damageParticles.emitRate = 300;
+    // damageParticles.minEmitPower = .1;
+    // damageParticles.maxEmitPower = 9;
+    // damageParticles.gravity = new BABYLON.Vector3(0, -20, 0); 
 
 
     return { CoT: CoT, 
@@ -118,7 +150,8 @@ function makePowerStation(name, scene) {
              anim: animationCore, 
              shell: core,
              innerCore: innerCore,
-             particles: damageParticles }
+             //particles: damageParticles 
+            }
     
 }
 
@@ -136,9 +169,9 @@ export function updatePowerStationGraphics( station, scene ) {
     var s = ((0.78/11) * (damage)) + 1.2
     station.innerCore.scaling = new BABYLON.Vector3(s,s,s)
 
-    if (damage > 3) {
-        station.particles.start()
-    }
+    // if (damage > 3) {
+    //     station.particles.start()
+    // }
 
 
 }
@@ -178,6 +211,8 @@ export function addPowerStation(scene, x, z, id) {
 
     addPowerStationWreckage(scene, powerStation)  
 
+    scene.liveStations += 1
+
 }
 
 
@@ -188,7 +223,7 @@ export function addPowerStations(scene) {
     addPowerStation(scene, 12,-8, 3)
 }
 
-// TODO remove the position codes in the makePowerstations call
+
 export function placePowerStations(scene)  {
 
     for ( var station of scene.powerStations ) {
@@ -322,7 +357,7 @@ export function enableStationWreckage(scene, station) {
         ws.exploParticles.start()
     }
 
-
+    scene.liveStations -= 1
 }
 
 export function addPowerStationWreckage(scene, station) {
@@ -354,7 +389,7 @@ export function destroyStation(station, scene, handleUpdateGUIinfo) {
 
     if(idx > -1) {
         scene.powerStations[idx].mesh.dispose()
-        scene.powerStations[idx].particles.dispose()
+        //scene.powerStations[idx].particles.dispose()
         scene.powerStations.splice(idx, 1)
     }    
 
