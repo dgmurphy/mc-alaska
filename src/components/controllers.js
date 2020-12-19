@@ -167,6 +167,7 @@ export function drive(agentInfo) {
 
 
 function colorizeParticles(agentPos, particles, ds) {
+    
 
     var color1, color2, colorDead, particlePower
 
@@ -220,6 +221,9 @@ function colorizeParticles(agentPos, particles, ds) {
 }
 
 function isOverWater(agentPos) {
+
+    // no water in this table
+    return false
 
     let waterBox = {
         xMax: 12,

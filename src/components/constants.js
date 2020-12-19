@@ -230,3 +230,13 @@ export const TERRAIN_MESH_NAME = "Anianchak"
 
 // export const LEVELS_MODE = "manual"
 export const LEVELS_MODE = "auto"
+
+export  const AGENT_TRAIL_COLOR1 =  [.5, .5, 0.3, 1.0]
+export  const AGENT_TRAIL_COLOR2 =  [.4, .4, 0.2, 1.0]
+export  const AGENT_TRAIL_COLOR_DEAD = [0.3, 0.1, 0, 0.0]
+
+export const WATER_TRAIL_COLOR1 = [.5, .5, 1, 1.0]
+export const WATER_TRAIL_COLOR2 = [.2, .25, .4, 1.0]
+export const WATER_TRAIL_COLOR_DEAD = [0, .1, .3, 1.0]
+
+export const MORTAR_BOOST_LIFE = 1000
