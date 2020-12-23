@@ -1,5 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
-import { TERRAIN_MESH_NAME } from './constants';
+import { TERRAIN_MESH_NAME } from './per-table-constants.js'
 
 
 export function randomRotation() {
@@ -19,7 +19,6 @@ export function randomRotation() {
 }
 
 
-// TODO make sure this only uses the terrain mesh for ray intersection
 export function getGroundElevation(x, z, scene) {
 
   // Find y location  on terrain

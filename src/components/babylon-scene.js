@@ -1,4 +1,3 @@
-//import * as BABYLON from 'babylonjs';
 import React, { Component } from 'react';
 import * as BABYLON from '@babylonjs/core';
 import { Engine, Scene } from '@babylonjs/core';
@@ -9,6 +8,7 @@ import { startAgentAnim } from './controllers.js';
 import { addRound, addThePackage } from './agent.js'
 import { makeBase} from './station.js'
 import { MAX_ROUNDS } from './constants.js'
+import { MC_SCENE_CLEAR_COLOR } from './per-table-constants.js'
 import { addPowerStations } from './station.js'
 
 
@@ -50,8 +50,6 @@ export default class BabylonScene extends Component {
 
   
   allAssetsLoaded(scene) {
-
-    /* Create other graphical game objects */
 
     // firing tower
     makeBase(scene)
@@ -97,7 +95,6 @@ export default class BabylonScene extends Component {
   }
 
 
-
   componentDidMount () {
 
     this.engine = new Engine(
@@ -109,7 +106,11 @@ export default class BabylonScene extends Component {
 
     let scene = new Scene(this.engine);
     this.scene = scene;
-    scene.clearColor = new BABYLON.Color3(0.38, 0.36, 0.41);
+    scene.clearColor = new BABYLON.Color3(
+		MC_SCENE_CLEAR_COLOR[0],
+		MC_SCENE_CLEAR_COLOR[1],
+		MC_SCENE_CLEAR_COLOR[2]
+		);
     createMaterials( scene )
     
     // Load environment & terrain

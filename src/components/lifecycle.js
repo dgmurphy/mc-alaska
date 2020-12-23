@@ -3,8 +3,8 @@ import * as BABYLON from '@babylonjs/core'
 import { destroyAgent, addAgent, addArtifact } from './agent.js'
 import { addPowerStations, addPowerStation, placePowerStations, 
             removeStationWreckage } from './station.js'
-import { GAME_PHASES, GAME_LEVELS, ARTIFACT_TYPES,
-         TERRAIN_MESH_NAME, LEVELS_MODE} from './constants.js'
+import { GAME_PHASES, GAME_LEVELS, ARTIFACT_TYPES } from './constants.js'
+import { TERRAIN_MESH_NAME, LEVELS_MODE } from './per-table-constants.js'
 import { deployMines, placeMines, clearMines } from './mines.js'
 import { randn_bm } from './utils'
 import { addActivator, clearActivators } from './activators.js'
@@ -229,7 +229,7 @@ function getLevelData(scene) {
     if (LEVELS_MODE === 'auto')
         return autoLevelData(scene)
     else
-        return manualLevelData()
+        return manualLevelData(scene)
 }
 
 // Get the variables for the level (to inform level gui)
@@ -248,11 +248,6 @@ function autoLevelData(scene) {
     // sample number of agents 
     let numbots = scene.gameLevel + 1
     numbots += Math.floor(Math.random() * 5)
-
-    //let numbots = Math.ceil(Math.random() * max_bots)
-
-    // limit agent health
-    //let max_agent_health = 100
     
     // assign agent health (skew towards lower vals, and create agent
     for (var i = 0; i < numbots; ++i) {
@@ -262,9 +257,6 @@ function autoLevelData(scene) {
         levelData.agents.push(agentHealth)
         
     }
-
-    // let healthPercent = (totalHealth / (max_bots * 100)) * 100
-    // healthPercent =  Math.floor(healthPercent)
 
     // create 5-10 artifacts, random sizes
     let numArtifacts = randn_bm(5, 10, 1.0)
@@ -282,18 +274,6 @@ function autoLevelData(scene) {
             levelData.artifacts.push(ARTIFACT_TYPES.large)
     }    
 
-    // create level tip
-    // let levelDifficulty = ""
-    // if (totalHealth < 300)
-    //     levelDifficulty = "Cake Walk"
-    // else if (totalHealth < 500)
-    //     levelDifficulty = "Easy"
-    // else if (totalHealth < 1000)
-    //     levelDifficulty = "Medium"
-    // else if (totalHealth < 1500)
-    //     levelDifficulty = "Hard"
-    // else
-    //     levelDifficulty = "Very Hard"
 
     let tip = "You will face " + numbots + " bots." 
     tip += "\nTotal bot strength is " + totalHealth
@@ -318,7 +298,7 @@ function manualLevelData(scene) {
         levelData.agents.push(agentHealth)
     }
 
-    // add artifacts  TODO for the orientation level, place them manually
+    // add artifacts   
     var i
     for (i = 0; i < GAME_LEVELS[gameLevel].artifacts.small; ++i) {
         levelData.artifacts.push(ARTIFACT_TYPES.small)
@@ -377,17 +357,6 @@ function handleDebug(e) {
         replaceMines(e)
         console.log("DEBUG: " + e.which)
     }
-
-    // // TEMP
-    // else if (e.which === 81) {
-    //     var c = e.currentTarget.document.getElementsByTagName('canvas')[0]
-    //     var scene = c.bjsScene
-    //     let lake = BABYLON.MeshBuilder.CreateSphere("LAKE", scene)
-    //     lake.position.x = -2
-    //     lake.position.y = 3.5
-    //     lake.position.z = 1.5
-    //     lake.scaling = new BABYLON.Vector3(5,5,5)
-    // }
 
     else if ( (e.which === 65) && (e.altKey) ) {
         deployMineActivator(e)
@@ -482,5 +451,4 @@ function restoreStations(e) {
     
     }
 
-    //console.log("wrecked stations length: " + scene.wreckedStations.length)
 }

@@ -1,4 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
+import { GLTF_FILE, MC_TABLE_XFORM, TABLE_BACKGROUND_ALPHA } from './per-table-constants.js'
 
 
 function soundReady(soundTask) {
@@ -103,21 +104,27 @@ export function loadAssets(scene, updateAssetStatus) {
 
 
     /* ------ terrain load ------------ */
-    var terrainTask = assetsManager.addMeshTask("terrainLoadTask", "", "./", "anianchak.gltf")
+    var terrainTask = assetsManager.addMeshTask("terrainLoadTask", "", "./", GLTF_FILE)
 
     terrainTask.onSuccess = function(task) {
-
-      //console.log('task successful', task)
-      //console.log('Loaded meshes: ', task.loadedMeshes)
 
       let newMeshes = task.loadedMeshes
 
       // bjs is left handed coords, gltf is right handed
-      newMeshes[0].scaling = new  BABYLON.Vector3(1, 1, -1);  
+      newMeshes[0].scaling = new  BABYLON.Vector3(1, 1, -1); 
+
       //Looks like mesh 0 is the base box
-      newMeshes[0].scaling = new  BABYLON.Vector3(1.88, 1.5, -1.88);
+      newMeshes[0].scaling = new  BABYLON.Vector3(
+		    MC_TABLE_XFORM.scale[0],
+		    MC_TABLE_XFORM.scale[1],
+        MC_TABLE_XFORM.scale[2]);
+        
       newMeshes[0].addRotation(0, Math.PI, 0);
-      newMeshes[0].position = new  BABYLON.Vector3(-1.2,0,0.1)
+
+      newMeshes[0].position = new  BABYLON.Vector3(
+		    MC_TABLE_XFORM.pos[0],
+		    MC_TABLE_XFORM.pos[1],
+		    MC_TABLE_XFORM.pos[2])
 
       var terrain = newMeshes[1]
       terrain.updateFacetData();
@@ -128,10 +135,7 @@ export function loadAssets(scene, updateAssetStatus) {
         vertex_data.normals[i] *= -1;
       }
 
-      //vertex_data.applyToMesh(terrain);
-
       terrain.computeWorldMatrix(true); 
-
 
       terrain.actionManager = new BABYLON.ActionManager(scene);
             
@@ -206,7 +210,7 @@ export function addGround(scene) {
     backgroundMaterial.diffuseTexture = new BABYLON.Texture("./textures/backgroundGround.png", scene);
     backgroundMaterial.diffuseTexture.hasAlpha = true;
     backgroundMaterial.opacityFresnel = true;
-    backgroundMaterial.alpha = 0.95;
+    backgroundMaterial.alpha = TABLE_BACKGROUND_ALPHA;
     backgroundMaterial.shadowLevel = 0.4;
     ground.material = backgroundMaterial; 
 
@@ -215,14 +219,14 @@ export function addGround(scene) {
   function addNewTerrain(scene) {
 
      // TEST POSITION NEW MESH
-     BABYLON.SceneLoader.ImportMesh("", "./", "anianchak.gltf", scene, function (newMeshes) {;
+     BABYLON.SceneLoader.ImportMesh("", "./", "test_mesh_name_here.gltf", scene, function (newMeshes) {;
     
       // bjs is left handed coords, gltf is right handed
       newMeshes[0].scaling = new  BABYLON.Vector3(1, 1, -1);  
       //Looks like mesh 0 is the base box
-      newMeshes[0].scaling = new  BABYLON.Vector3(1.88, 2,-1.88);
+      newMeshes[0].scaling = new  BABYLON.Vector3(0,0,0);
       newMeshes[0].addRotation(0, Math.PI, 0);
-      newMeshes[0].position = new  BABYLON.Vector3(-1.2,-2,0.1)
+      newMeshes[0].position = new  BABYLON.Vector3(0,0,0)
 
       var terrain = newMeshes[1]
       terrain.updateFacetData();
